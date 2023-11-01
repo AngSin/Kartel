@@ -1,6 +1,6 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
-export default buildModule("Sepolia -> Argo", (m) => {
+export default buildModule("Sepolia -> Springroll", (m) => {
   const vibezKartel = m.contract("VibezKartel");
   const kartel = m.contract("Kartel");
   const zaibatsu = m.contract("Vybz");

@@ -11,7 +11,8 @@ contract Kartel is ERC721, ERC721Enumerable, ERC721Burnable, Ownable {
     address public deadWallet = 0x000000000000000000000000000000000000dEaD;
     address public vibezKartelAddress = 0xd3f35C2Bc82b9e156393fD5B0219CCd0DeCcCB8D;
     address public zaibatsuAddress = 0xd74702fb587fAE4567688868c9D197521920dda9;
-    mapping (address => uint256) mintCount;
+    mapping (uint256 => mapping(address => uint256)) mintStageToMintCount;
+    mapping (uint256 => bool) zaibatsuMinted;
     uint256 public maxSupply = 501;
     uint256 public mintStage = 0; // 1 = VibezKartel, 2 = FCFS, 3 = Zaibatsu
     bytes32 public fcfsRoot = 0xc716c180cebcf211e353415ebe20122b84d8f9ac0b1df9df9a083d78d6703091; // TODO change
@@ -47,16 +48,17 @@ contract Kartel is ERC721, ERC721Enumerable, ERC721Burnable, Ownable {
         return baseURI;
     }
 
-    function mint() private {
-        uint256 _mintStage = mintStage;
-        uint256 totalSupply = super.totalSupply(); // gas saving (MLOAD is cheaper)
+    function stageCheckMint() private {
+        uint256 _mintStage = mintStage; // gas saving (MLOAD is cheaper)
+        uint256 totalSupply = super.totalSupply(); //
         require (totalSupply + 1 <= maxSupply, "Max supply reached!");
-        if (_mintStage == 1) {
-            require(mintCount[msg.sender] < 2, "You already minted!");
-        } else if (_mintStage == 2 || _mintStage == 3) {
-            require(mintCount[msg.sender] < 1, "You already minted!");
+        uint256 mintCount = mintStageToMintCount[_mintStage][msg.sender]; //
+        if (_mintStage == 1) { // VibezKartel
+            require(mintCount < 2, "You already minted!");
+        } else if (_mintStage == 2) { // FCFS
+            require(mintCount < 1, "You already minted!");
         }
-        mintCount[msg.sender]++;
+        mintStageToMintCount[_mintStage][msg.sender]++;
         super._safeMint(msg.sender, totalSupply + 1);
     }
 
@@ -65,7 +67,7 @@ contract Kartel is ERC721, ERC721Enumerable, ERC721Burnable, Ownable {
         for (uint256 i = 0; i < _vibezKartelIds.length; i++) {
             uint256 _vibezKartelId = _vibezKartelIds[i];
             IERC721(vibezKartelAddress).transferFrom(msg.sender, deadWallet, _vibezKartelId);
-            mint();
+            stageCheckMint();
         }
     }
 
@@ -75,13 +77,19 @@ contract Kartel is ERC721, ERC721Enumerable, ERC721Burnable, Ownable {
             MerkleProof.verify(_proof, fcfsRoot, keccak256(bytes.concat(keccak256(abi.encode(msg.sender))))),
             "You are not in the FCFS list!"
         );
-        mint();
+        stageCheckMint();
     }
 
-    function zaibatsuMint() public {
+    function zaibatsuMint(uint256[] calldata _zaibatsuIds) public {
         require(mintStage == 3, "Mint isn't open for Zaibatsu");
         require(IERC721(zaibatsuAddress).balanceOf(msg.sender) > 0, "You don't own any Zaibatsu!");
-        mint();
+        uint256 totalSupply = super.totalSupply(); // gas saving (MLOAD is cheaper)
+        for (uint256 i = 0; i < _zaibatsuIds.length; i++) {
+            require(IERC721(zaibatsuAddress).ownerOf(_zaibatsuIds[i]) == msg.sender, "You're not the owner of this Zaibatsu!");
+            require(!zaibatsuMinted[_zaibatsuIds[i]], "This Zaibatsu already minted!");
+            zaibatsuMinted[_zaibatsuIds[i]] = true;
+            super._safeMint(msg.sender, totalSupply + i + 1);
+        }
     }
 
     function ownerMint() public onlyOwner {

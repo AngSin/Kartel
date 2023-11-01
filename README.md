@@ -4,3 +4,6 @@
 2. FCFS
 3. Zaibatsu
 4. Owner mint
+
+1. Zaibatsu
+2. multiple mints in multiple stages
