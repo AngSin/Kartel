@@ -82,7 +82,7 @@ contract Kartel is ERC721, ERC721Enumerable, ERC721Burnable, Ownable {
 
     function zaibatsuMint(uint256[] calldata _zaibatsuIds) public {
         require(mintStage == 3, "Mint isn't open for Zaibatsu");
-        require(IERC721(zaibatsuAddress).balanceOf(msg.sender) > 0, "You don't own any Zaibatsu!");
+        require (super.totalSupply() + _zaibatsuIds.length <= maxSupply, "Max supply reached!");
         uint256 totalSupply = super.totalSupply(); // gas saving (MLOAD is cheaper)
         for (uint256 i = 0; i < _zaibatsuIds.length; i++) {
             require(IERC721(zaibatsuAddress).ownerOf(_zaibatsuIds[i]) == msg.sender, "You're not the owner of this Zaibatsu!");
