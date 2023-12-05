@@ -48,6 +48,7 @@ describe("Kartel mint", () => {
     await kartelContract.setMaxSupply(21);
     await kartelContract.ownerMint();
     expect(await kartelContract.balanceOf(owner.address)).to.equal(19); // 2 went to owner1
+    expect(await kartelContract.totalSupply()).to.equal(21); // total
   });
 
   it("handles FCFS & Vibez Kartel mint", async () => {

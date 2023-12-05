@@ -15,7 +15,7 @@ contract Kartel is ERC721, ERC721Enumerable, ERC721Burnable, Ownable {
     mapping (uint256 => bool) zaibatsuMinted;
     uint256 public maxSupply = 501;
     uint256 public mintStage = 0; // 1 = VibezKartel, 2 = FCFS, 3 = Zaibatsu
-    bytes32 public fcfsRoot = 0xc716c180cebcf211e353415ebe20122b84d8f9ac0b1df9df9a083d78d6703091; // TODO change
+    bytes32 public fcfsRoot = 0x30de03a191f6c5142973294d44dbe4815c1e4103ff6a77644927e896dba5e742;
     string baseURI = "https://bafybeif6vdt3mfkthaqv666uxuxfdnj4wd6vc2y52is7qf2qatzs3vl24u.ipfs.nftstorage.link/";
 
     constructor() ERC721("Kartel", "KTL") Ownable(msg.sender) {}

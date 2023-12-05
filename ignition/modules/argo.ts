@@ -9,14 +9,14 @@ export default buildModule("Argo", (m) => {
   // Zaibatsu mint
   m.call(zaibatsu, "setCreators", [
     [
-      "0x050C1C3D2E802dD6208Acee28806CC65f35F9327", // Springroll's wallets
-      "0x1D7d2aA3282d5f70598Aac7A3972a092D7743ef0", // Argo's wallet
+      "0x050C1C3D2E802dD6208Acee28806CC65f35F9327",
+      "0x1D7d2aA3282d5f70598Aac7A3972a092D7743ef0",
     ],
   ]);
   const addresses: string[] = [
-    "0xE03E3F9aD56862184594F95811bD18cDC0Bab495", // spendthat.eth
-    "0x050C1C3D2E802dD6208Acee28806CC65f35F9327", // Springroll
-    "0x1D7d2aA3282d5f70598Aac7A3972a092D7743ef0", // Argo
+    "0xE03E3F9aD56862184594F95811bD18cDC0Bab495",
+    "0x050C1C3D2E802dD6208Acee28806CC65f35F9327",
+    "0x1D7d2aA3282d5f70598Aac7A3972a092D7743ef0",
   ];
   const leaves = [...addresses].map((address) => [address]);
   const tree = StandardMerkleTree.of(leaves, ["address"]);

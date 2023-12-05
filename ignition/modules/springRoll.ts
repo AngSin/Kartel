@@ -6,9 +6,9 @@ export default buildModule("Springroll1", (m) => {
   const kartel = m.contract("Kartel");
   const zaibatsu = m.contract("Vybz");
   const addresses: string[] = [
-    "0xE03E3F9aD56862184594F95811bD18cDC0Bab495", // spendthat.eth
-    "0x050C1C3D2E802dD6208Acee28806CC65f35F9327", // Springroll
-    "0xB82C3E63A224Ff8AB687952EDc322df55EFB7248", // DreadOne
+    "0xE03E3F9aD56862184594F95811bD18cDC0Bab495",
+    "0x050C1C3D2E802dD6208Acee28806CC65f35F9327",
+    "0xB82C3E63A224Ff8AB687952EDc322df55EFB7248",
   ];
   const leaves = [...addresses].map((address) => [address]);
   const tree = StandardMerkleTree.of(leaves, ["address"]);

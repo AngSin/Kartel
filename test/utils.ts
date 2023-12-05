@@ -5,7 +5,7 @@ import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 const addresses: string[] = [
   "0xE03E3F9aD56862184594F95811bD18cDC0Bab495",
   "0x1D7d2aA3282d5f70598Aac7A3972a092D7743ef0", // Berk's wallets
-  "0x4b42AA2c55E7CB2E89539aBe9F2780D9c23Bf222" // Argo's wallet
+  "0x4b42AA2c55E7CB2E89539aBe9F2780D9c23Bf222", // Argo's wallet
 ];
 
 export const deployContract = async (name: string) => {
@@ -16,4 +16,14 @@ export const deployContract = async (name: string) => {
 export const createNewTree = (newAddresses: string[]) => {
   const leaves = [...addresses, ...newAddresses].map((address) => [address]);
   return StandardMerkleTree.of(leaves, ["address"]);
+};
+
+export const deployModule = async () => {
+  const contractAFactory = await ethers.getContractFactory("ContractA");
+  const contractA = await contractAFactory.deploy();
+  await contractA.waitForDeployment();
+  const contractBFactory = await ethers.getContractFactory("ContractB");
+  const contractB = await contractAFactory.deploy([
+    await contractA.getAddress(),
+  ]);
 };
